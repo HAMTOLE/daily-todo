@@ -5,15 +5,17 @@
 
 - 앱 주소: https://hamtole.github.io/daily-todo/
   (2026-11-25 가족 대시보드 저장소 안 `family-dashboard/daily-todo/` 에서 이 저장소로 옮겼습니다.)
-- 같은 주소 계열의 `세줄일기`(`/sejul-diary/`)와 **비밀키를 함께 씁니다.**
-  브라우저 `localStorage` 의 `sejul.diaryKey` 를 그대로 읽고, 없으면 잠금 화면에서 한 번만 입력하면 됩니다.
+- **비밀키는 `세줄일기`(`/sejul-diary/`)와 따로입니다.** (2026-11-25 분리)
+  이 앱은 브라우저 `localStorage` 의 `dailyTodo.key` 에 자기 키를 두고, `/todos` 를 부를 때 `X-Todo-Key` 헤더로 보냅니다.
+  같은 주소 계열(`hamtole.github.io`)의 세줄일기는 `sejul.diaryKey` + `X-Diary-Key` 를 쓰므로 두 앱이 키를 덮어쓰지 않습니다.
+  기기에 키가 없으면 잠금 화면에서 한 번만 입력하면 됩니다.
 
 ## 이 저장소에 들어 있지 않은 것
 
 공개 저장소이므로 다음은 코드에 넣지 않습니다.
 
 - 노션 데이터베이스 ID, 통합 토큰
-- Worker 비밀키 (`X-Diary-Key` 값)
+- Worker 비밀키 (`X-Todo-Key` 값)
 - 실제 할 일 내용 (앱이 실행 중에 Worker에서 받아 옵니다)
 
 앱은 Worker 주소(`https://family-notion.mynamebiya.workers.dev`)의 `/todos` 만 호출합니다.
@@ -27,7 +29,7 @@
 | `PATCH /todos/:id` | 완료 토글 `{done}` · 미루기 `{postpone:true}` · `{due}` · `{title}` · `{category}` |
 | `DELETE /todos/:id` | 그 항목 보관(아카이브) |
 
-모두 `X-Diary-Key` 헤더가 필요합니다.
+모두 `X-Todo-Key` 헤더가 필요합니다. (세줄일기용 `X-Diary-Key` 로는 열리지 않습니다 — 서버가 `401 todo_auth_required` 로 막습니다.)
 
 ## 배포 방식 (중요)
 
